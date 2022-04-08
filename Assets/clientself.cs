@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using System.Threading;
  
 public class clientself : MonoBehaviour {
+    public bool isNumberIP;
     private byte[] data = new byte[1024];//这个是一个数据容器
     private byte[] nicknamedata = new byte[1024];//这个是一个数据容器
     public InputField inputcontext;
@@ -23,6 +24,18 @@ public class clientself : MonoBehaviour {
        
     }
 	
+    public void switchNumberIP()
+    {
+        if(isNumberIP)
+        {
+            isNumberIP = false;
+        }
+        else
+        {
+            isNumberIP = true;
+        }
+    }
+    
 	// Update is called once per frame
 	void Update () {
         if (getmsg != null && getmsg!= oldmessage)
@@ -35,10 +48,18 @@ public class clientself : MonoBehaviour {
     void ConnectToServer()
     {
         TcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        if(!isNumberIP)
+        {
+            IPHostEntry ipHostInfo = Dns.Resolve(inputIP.text);
+            IPAddress myip = ipHostInfo.AddressList[0];
+            TcpClient.Connect(new IPEndPoint(myip, 2000));  
+        }
+        else
+        {
+            TcpClient.Connect(new IPEndPoint(IPAddress.Parse(inputIP.text), 2000));  
+        }
         //发起连接
-        IPHostEntry ipHostInfo = Dns.Resolve(inputIP.text);
-        IPAddress myip = ipHostInfo.AddressList[0];
-        TcpClient.Connect(new IPEndPoint(myip, 2000));
+        
  
         //创建新线程来接受消息
         thread = new Thread(GetmessageFromServer);
