@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections;
+using System;
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
@@ -12,6 +12,7 @@ public class clientself : MonoBehaviour {
     private byte[] nicknamedata = new byte[1024];//这个是一个数据容器
     public InputField inputcontext;
     public InputField inputIP;
+    public InputField inputPort;
     public InputField inputNickname;
     private Socket TcpClient;
     string getmsg,oldmessage;
@@ -56,7 +57,14 @@ public class clientself : MonoBehaviour {
         }
         else
         {
-            TcpClient.Connect(new IPEndPoint(IPAddress.Parse(inputIP.text), 2000));  
+            int port = 2000;
+            inputPort.text = 2000.ToString();
+            if(Convert.ToInt32(inputPort.text)>0)
+            {
+                port = Convert.ToInt32(inputPort.text);
+            }
+
+            TcpClient.Connect(new IPEndPoint(IPAddress.Parse(inputIP.text), port)); 
         }
         //发起连接
         
